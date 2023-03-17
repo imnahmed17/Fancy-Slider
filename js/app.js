@@ -5,6 +5,7 @@ const search = document.getElementById("search");
 const searchBtn = document.getElementById("search-btn");
 const sliderBtn = document.getElementById("create-slider");
 const sliderContainer = document.getElementById("sliders");
+const dots = document.querySelector(".dots");
 const errorMessage = document.getElementById("error-message");
 // selected image
 let sliders = [];
@@ -65,6 +66,18 @@ const createSlider = () => {
     return;
   }
 
+  // validate duration
+  const duration = document.getElementById("duration").value || 1000;
+  if (duration > 0) {
+    // hide image aria
+    imagesArea.style.display = "none";
+    errorMessage.innerText = "";
+    document.getElementById("duration").value = "";
+  } else {
+    errorMessage.innerText = "Please Provide Positive value";
+    return;
+  }
+
   // create slider previous next area
   sliderContainer.innerHTML = "";
   const prevNext = document.createElement("div");
@@ -75,28 +88,23 @@ const createSlider = () => {
   `;
   sliderContainer.appendChild(prevNext);
   document.querySelector(".main").style.display = "block";
-  const duration = document.getElementById("duration").value || 1000;
+
+  dots.innerHTML = "";
   sliders.forEach((slide, index) => {
+    console.log(slide, index);
     let item = document.createElement("div");
     item.className = "slider-item";
     item.innerHTML = `<img class="w-100" src="${slide}" alt="">`;
     sliderContainer.appendChild(item);
     // create slider dots
-    let dots = document.querySelector(".dots");
     dots.innerHTML += `<span class="dot" onclick="changeSlide(${index})"></span>`;
   });
+
   changeSlide(0);
-  if (duration > 0) {
-    // hide image aria
-    imagesArea.style.display = "none";
-    timer = setInterval(function () {
-      slideIndex++;
-      changeSlide(slideIndex);
-    }, duration);
-    errorMessage.innerText = "";
-  } else {
-    errorMessage.innerText = "Please Provide Positive value";
-  }
+  timer = setInterval(function () {
+    slideIndex++;
+    changeSlide(slideIndex);
+  }, duration);
 };
 
 // change slider index
